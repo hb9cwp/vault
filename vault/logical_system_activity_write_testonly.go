@@ -15,6 +15,7 @@ import (
 	"github.com/hashicorp/vault/helper/namespace"
 	"github.com/hashicorp/vault/helper/timeutil"
 	"github.com/hashicorp/vault/sdk/framework"
+	"github.com/hashicorp/vault/sdk/helper/clientcountutil"
 	"github.com/hashicorp/vault/sdk/helper/clientcountutil/generation"
 	"github.com/hashicorp/vault/sdk/logical"
 	"github.com/hashicorp/vault/vault/activity"
@@ -55,6 +56,11 @@ func (b *SystemBackend) handleActivityWriteData(ctx context.Context, request *lo
 	}
 	if len(input.Data) == 0 {
 		return logical.ErrorResponse("Missing required \"data\" values"), logical.ErrInvalidRequest
+	}
+
+	err = clientcountutil.VerifyInput(input)
+	if err != nil {
+		return logical.ErrorResponse("Invalid input data: %s", err), logical.ErrInvalidRequest
 	}
 
 	numMonths := 0
