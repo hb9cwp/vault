@@ -28,7 +28,24 @@ import (
 	"github.com/hashicorp/vault/sdk/logical"
 
 	//sepiortsmwrapper "github.com/hb9cwp/go-kms-wrapping/wrappers/sepiortsm/v2"
-	"github.com/hb9cwp/go-kms-wrapping/wrappers/sepiortsm/v2"
+	//"github.com/hb9cwp/go-kms-wrapping/wrappers/sepiortsm/v2"
+	// use feature branch sepior/tsm
+	//  https://go.dev/ref/mod#vcs-branch
+	//  https://oscarchou.com/posts/golang/go-mod-reference-package-on-the-specific-commit-version/
+	//  https://github.com/golang/go/issues/41535#issuecomment-697132636
+	//  If you want to use go mod versions with git, you need to create git tags like 0.4.5 or 1.2.3 and
+	//  go mod will recognize them as versions. You can place such version tags on any commit in any branch.
+	//"github.com/hb9cwp/go-kms-wrapping/wrappers/sepiortsm/v2@crosscom/mpc"
+	//"github.com/hb9cwp/go-kms-wrapping/wrappers/sepiortsm/v2@sepior/tsm"
+	//"github.com/hb9cwp/go-kms-wrapping/wrappers/sepiortsm@v2.1.0-tsm"
+	// Note: do not use "/" in branch names!
+	//  https://www.reddit.com/r/golang/comments/ikl3d2/comment/jdx60q5/?utm_source=share&utm_medium=web2x&context=3
+	// FYI if your branch is something like _"feat/blah"_ it won't work because Go doesn't like the _`/`_
+	// in there, so you should use a commit hash instead.
+	"github.com/hb9cwp/go-kms-wrapping/wrappers/sepiortsm"
+	// --- after renameing feature branch from "sepior/tsm" to "crosscom-mpc" ---
+	//"github.com/hb9cwp/go-kms-wrapping/wrappers/sepiortsm@crosscom-mpc"
+	//"github.com/hb9cwp/go-kms-wrapping/wrappers/sepiortsm@v2.1.1"
 )
 
 var (

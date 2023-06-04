@@ -27,7 +27,7 @@ This example shows configuring Sepior seal through the Vault
 configuration file by providing all the required values:
 
 ```hcl
-seal "sepiortsmwrapper" {
+seal "sepiortsm" {
  userID = ""
  passwords = ""
  urls = ""
@@ -37,7 +37,7 @@ XXX ToDo, for info only:
 ```
 const credentials string = `{
         "userID": "owxxxHT",
-        "urls": [ "https://pxxx1.tsm.sepior.net", "https://pxxx2.tsm.sepior.net", "https://px3.tsm.sepior.net" ],
+        "urls": [ "https://pxxx1.tsm.sepior.net", "https://pxxx2.tsm.sepior.net", "https://pxxx3.tsm.sepior.net" ],
         "passwords": [ "tfxxxMq", "vcxxxjW", "Dwxxx18" ]
 ```
 
@@ -59,6 +59,10 @@ These parameters apply to the `seal` stanza in the Vault configuration file:
 Authentication-related values must be provided, either as environment
 variables or as configuration parameters.
 
+~> **Note:** Although the configuration file allows you to pass in
+`SEPIOR_USER_ID` and `SEPIOR_PASSWORDS` as part of the seal's parameters,
+it is _strongly_ recommended to set these values via environment variables.
+
 DuoKey authentication values:
 
 - `SEPIOR_USER_ID`
@@ -68,3 +72,12 @@ DuoKey authentication values:
 ## Key Rotation
 
 XXX ToDo: This seal does not support rotating keys yet. ???
+
+from AWS KMS:
+  https://raw.githubusercontent.com/hashicorp/vault/main/website/content/docs/configuration/seal/awskms.mdx 
+This seal supports rotating the root keys defined in AWS KMS
+[doc](https://docs.aws.amazon.com/kms/latest/developerguide/rotate-keys.html). Both automatic
+rotation and manual rotation is supported for KMS since the key information is stored with the
+encrypted data. Old keys must not be disabled or deleted and are used to decrypt older data.
+Any new or updated data will be encrypted with the current key defined in the seal configuration
+or set to current under a key alias.
