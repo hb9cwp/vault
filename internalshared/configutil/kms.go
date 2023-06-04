@@ -19,12 +19,16 @@ import (
 	"github.com/hashicorp/go-kms-wrapping/wrappers/azurekeyvault/v2"
 	"github.com/hashicorp/go-kms-wrapping/wrappers/gcpckms/v2"
 	"github.com/hashicorp/go-kms-wrapping/wrappers/ocikms/v2"
+
 	"github.com/hashicorp/go-kms-wrapping/wrappers/transit/v2"
 	"github.com/hashicorp/go-multierror"
 	"github.com/hashicorp/go-secure-stdlib/parseutil"
 	"github.com/hashicorp/hcl"
 	"github.com/hashicorp/hcl/hcl/ast"
 	"github.com/hashicorp/vault/sdk/logical"
+
+	//sepiortsmwrapper "github.com/hb9cwp/go-kms-wrapping/wrappers/sepiortsm/v2"
+	"github.com/hb9cwp/go-kms-wrapping/wrappers/sepiortsm/v2"
 )
 
 var (
@@ -192,6 +196,10 @@ func configureWrapper(configKMS *KMS, infoKeys *[]string, info *map[string]strin
 			opts = append(opts, wrapping.WithKeyId(keyId))
 		}
 		wrapper, kmsInfo, err = GetOCIKMSKMSFunc(configKMS, opts...)
+
+	case wrapping.WrapperTypeSepiorTSM:
+		wrapper, kmsInfo, err = GetSepiorTSMFunc(configKMS, opts...)
+
 	case wrapping.WrapperTypeTransit:
 		wrapper, kmsInfo, err = GetTransitKMSFunc(configKMS, opts...)
 
@@ -322,6 +330,29 @@ func GetOCIKMSKMSFunc(kms *KMS, opts ...wrapping.Option) (wrapping.Wrapper, map[
 		info["OCI KMS Crypto Endpoint"] = wrapperInfo.Metadata[ocikms.KmsConfigCryptoEndpoint]
 		info["OCI KMS Management Endpoint"] = wrapperInfo.Metadata[ocikms.KmsConfigManagementEndpoint]
 		info["OCI KMS Principal Type"] = wrapperInfo.Metadata["principal_type"]
+	}
+	return wrapper, info, nil
+}
+
+func GetSepiorTSMFunc(kms *KMS, opts ...wrapping.Option) (wrapping.Wrapper, map[string]string, error) {
+	//wrapper := sepiortsmwrapper.NewWrapper()
+	wrapper := sepiortsm.NewWrapper()
+	wrapperInfo, err := wrapper.SetConfig(context.Background(), append(opts, wrapping.WithConfigMap(kms.Config))...)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	info := make(map[string]string)
+	// see simple example in branch "rs+" of TSM SDK app/example/cipher/ for minimal parameters, e.g.
+	// UserIDs, URLs with IPs/FQDNs, and passwords for 3 MPC nodes
+	//  https://github.com/hb9cwp/go-tsm-sdk_rs/blob/rs1/app/examples/cipher/encryption_example_modified.go
+	// "userID": "Fxn...1MC",
+	// "urls": [ "https://pxxx1.tsm.sepior.net", "https://pxxx2.tsm.sepior.net", "https://pxxx3.tsm.sepior.net" ],
+	// "passwords": [ "lm3xxxTVb", "60wxxxyb0", "RmnxxxaWe" ]
+	if wrapperInfo != nil {
+		info["Sepior TSM User ID"] = wrapperInfo.Metadata["userID"]
+		info["Sepior TSM URLs"] = wrapperInfo.Metadata["urls"]
+		info["Sepior TSM Passwords"] = wrapperInfo.Metadata["password"]
 	}
 	return wrapper, info, nil
 }
