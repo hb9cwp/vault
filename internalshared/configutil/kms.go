@@ -343,7 +343,7 @@ func GetSepiorTSMFunc(kms *KMS, opts ...wrapping.Option) (wrapping.Wrapper, map[
 	}
 
 	info := make(map[string]string)
-	// see simple example in branch "rs+" of TSM SDK app/example/cipher/ for minimal parameters, e.g.
+	// see simple example in branch "rs1" of TSM SDK app/example/cipher/ for minimal parameters, e.g.
 	// UserIDs, URLs with IPs/FQDNs, and passwords for 3 MPC nodes
 	//  https://github.com/hb9cwp/go-tsm-sdk_rs/blob/rs1/app/examples/cipher/encryption_example_modified.go
 	// "userID": "Fxn...1MC",

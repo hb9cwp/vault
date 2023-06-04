@@ -1,0 +1,70 @@
+---
+layout: docs
+page_title: SepiorTSM - Seals - Configuration
+sidebar_title: Sepior
+description: >-
+  The Sepior seal configures Vault to use Duokey as the seal
+  wrapping mechanism.
+---
+
+# `sepiortsm` Seal
+
+The Sepior seal configures Vault to use a TSM cluster with Multi-Party
+Computation (MPC) nodes as the seal wrapping mechanism. 
+The Sepior seal is activated by one of the following:
+
+- The presence of a `seal "sepiortsm"` block in Vault's configuration file.
+
+- The presence of the environment variable `VAULT_SEAL_TYPE` set to `sepiortsm`.
+  If enabling via environment variable, all other required values specific to
+  Sepior (i.e. `SEPIOR_USER_ID`, etc.) must be also supplied, as
+  well as all other Sepior-related environment variables that lends to successful
+  authentication (i.e. `SEPIOR_PASSWORDS`, etc.).
+
+## `sepiortsm` Example
+
+This example shows configuring Sepior seal through the Vault
+configuration file by providing all the required values:
+
+```hcl
+seal "sepiortsmwrapper" {
+ userID = ""
+ passwords = ""
+ urls = ""
+}
+```
+XXX ToDo, for info only: 
+```
+const credentials string = `{
+        "userID": "owxxxHT",
+        "urls": [ "https://pxxx1.tsm.sepior.net", "https://pxxx2.tsm.sepior.net", "https://px3.tsm.sepior.net" ],
+        "passwords": [ "tfxxxMq", "vcxxxjW", "Dwxxx18" ]
+```
+
+## `sepiortsm` Parameters
+
+These parameters apply to the `seal` stanza in the Vault configuration file:
+
+- `userID` `(string: <required>)`: The user ID for credentials to query the Sepior TSM SDK.
+  May also be specified by the `SEPIOR_USER_ID` environment variable.
+
+- `passwords` `(string: <required>)`: The passwords, one per MPC cluster node.
+  May also be specified by the `SEPIOR_PASSWORDS` environment variable. 
+
+- `urls` `(string: <required>)`: The URLs of the MPC cluster nodes. 
+  May also be specified by the `SEPIOR_URLS` environment variable.
+
+## Authentication
+
+Authentication-related values must be provided, either as environment
+variables or as configuration parameters.
+
+DuoKey authentication values:
+
+- `SEPIOR_USER_ID`
+
+- `SEPIOR_PASSWORDS`
+
+## Key Rotation
+
+XXX ToDo: This seal does not support rotating keys yet. ???
